@@ -1,0 +1,43 @@
+*{
+	box-sizing: border-box;
+}
+html,body,div,p,span,i,h1,h2,h3,h4,input,button,label,table{
+	padding: 0;
+	margin: 0;
+}
+body{
+	font-family: 'Microsoft Yahei', arial, sans-serif;
+}
+a{
+	text-decoration: none;
+}
+li{
+	list-style: none;
+}
+.left{
+	float: left;
+}
+.right{
+	float: right;
+}
+.clearfix{
+	content: "";
+	display: block;
+	width: 0;
+	height: 0;
+	clear: both;
+}
+
+#msg{
+	width: 150px;
+	padding: 20px;
+	text-align: center;
+	font-size: 16px;
+	color: #fff;
+	background: rgba(0, 0, 0, .7);
+	position: fixed;
+	left: 50%;
+	margin-left: -75px;
+	top: 48%;
+	display: none;
+}

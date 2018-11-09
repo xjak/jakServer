@@ -5,7 +5,12 @@
 			<li>name:<input type="text" v-model="d.name"></li>
 			<li>msg：<input type="text" v-model="d.msg"></li>
 			<li>img：<input type="text" v-model="d.img"></li>
-			<li>status：<input type="text" v-model="d.status"></li>
+			<li>status：
+				<select v-model="d.status">
+					<option value="0" selected>未</option>
+					<option value="1">已</option>
+				</select>
+			</li>
 			<li><button @click="add">完成</button></li>
 		</ul>
 	</div>
@@ -20,7 +25,7 @@ export default {
 				name: '',
 				msg: '',
 				img: '',
-				status: '', // 状态： 未看 已看
+				status: '0',
 				time: '',
 				type: '1'
 			},
@@ -33,7 +38,7 @@ export default {
 		add () {
 			if (this.d.name) {
 				let time = Date.now()
-				this.d.time = time
+				this.d.time = this.$api.getTime(time)
 				this.id = time
 				this.$fs.writeFile(this.$path + 'list/' + time + '.json', JSON.stringify(this.d), e => {
 					if (e) {

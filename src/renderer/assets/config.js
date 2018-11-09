@@ -3,7 +3,7 @@ const fs = require('fs')
 
 const path = 'D:/A/data/'
 
-const getTime = (t = '', f) => {
+const getTime = (t = Date.now(), f) => {
 	let d = new Date(t)
 	let da = d.getDate()
 	let mo = d.getMonth() + 1

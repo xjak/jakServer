@@ -59,7 +59,6 @@ export default{
 			if (d) {
 				let list = []
 				d.forEach(s => {
-					console.log(s)
 					this.$fs.readFile(this.$path + 'list/' + s, 'utf-8', (e, d) => {
 						list.push(JSON.parse(d))
 					})

@@ -1,5 +1,5 @@
 <template>
-	<div class="login">
+	<div class="login" @keydown="enter($event)">
 		<div v-if="!json.password">
 			<label>初始化密码：</label>
 			<input type="password" v-model="password">
@@ -14,6 +14,7 @@
 
 <script>
 export default {
+	// 动态背景
 	data () {
 		return {
 			json: {},
@@ -25,30 +26,50 @@ export default {
 		this.$fs.readFile(this.$path + 'config.json', 'utf-8', (e, d) => {
 			if (e) {
 				this.$api.msg('无配置文件')
+				// 检测data目录
+				this.$fs.stat(this.$path, (err, status) => {
+					if (err) {
+						console.log(err)
+						this.$fs.mkdir(this.$path, e => {
+							if (e) {
+								this.$api.msg('创建data目录失败！')
+							}
+						})
+					}
+				})
+				// 创建list
+				this.$fs.stat(this.$path + 'list', (err, status) => {
+					if (err) {
+						this.$fs.mkdir(this.$path + 'list', e => {
+							if (e) {
+								this.$api.msg('创建list目录失败！')
+							}
+						})
+					}
+				})
+				// 创建copy
+				this.$fs.stat(this.$path + 'copy', (err, status) => {
+					if (err) {
+						this.$fs.mkdir(this.$path + 'copy', e => {
+							if (e) {
+								this.$api.msg('创建copy目录失败！')
+							}
+						})
+					}
+				})
+				// 检测logs目录
+				this.$fs.stat(this.$path + 'logs', (err, status) => {
+					if (err) {
+						console.log(err)
+						this.$fs.mkdir(this.$path + 'logs', e => {
+							if (e) {
+								this.$api.msg('创建目录失败！')
+							}
+						})
+					}
+				})
 			} else {
 				this.json = JSON.parse(d)
-			}
-		})
-		// 检测data目录
-		this.$fs.stat(this.$path, (err, status) => {
-			if (err) {
-				console.log(err)
-				this.$fs.mkdir(this.$path, e => {
-					if (e) {
-						this.$api.msg('创建目录失败！')
-					}
-				})
-			}
-		})
-		// 检测logs目录
-		this.$fs.stat(this.$path + 'logs', (err, status) => {
-			if (err) {
-				console.log(err)
-				this.$fs.mkdir(this.$path + 'logs', e => {
-					if (e) {
-						this.$api.msg('创建目录失败！')
-					}
-				})
 			}
 		})
 	},
@@ -78,6 +99,11 @@ export default {
 					}
 				})
 				this.$fs.writeFile(this.$path + 'acg配置文件勿删!.txt', 'acg配置文件勿删！', () => {})
+			}
+		},
+		enter (e) {
+			if (e.keyCode === 13) {
+				this.login()
 			}
 		}
 	}

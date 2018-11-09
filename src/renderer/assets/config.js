@@ -3,8 +3,20 @@ const fs = require('fs')
 
 const path = 'D:/A/data/'
 
-const getTime = () => {
-	return new Date().toString()
+const getTime = (t = '', f) => {
+	let d = new Date(t)
+	let da = d.getDate()
+	let mo = d.getMonth() + 1
+	let time = ''
+	if (f) {
+		let h = d.getHours()
+		let f = d.getMinutes()
+		let s = d.getSeconds()
+		time = ' ' + h + ':' + f + ':' + s
+	}
+	da = da < 10 ? '0' + da : da
+	mo = mo < 10 ? '0' + mo : mo
+	return d.getFullYear() + '-' + mo + '-' + da + (f ? time : '')
 }
 
 const msg = (text, time = 2000, fn) => {
@@ -29,6 +41,7 @@ const log = (type = 'login') => {
 let api = {
 	path,
 	msg,
+	getTime,
 	log
 }
 

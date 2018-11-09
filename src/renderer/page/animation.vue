@@ -1,13 +1,17 @@
 <template>
 <div class="animation">
 	<div class="search">
-		<input type="text">
+		<input type="text" @input="searchChange" v-model="searchText">
 		<button type="button">搜索</button>
+		<ul>
+			<li v-for="x in searchList">{{x}}</li>
+		</ul>
 	</div>
 	<addData></addData>
 	<div>
-		<div>name: <input type="text"></div>
-		<div>type: <input type="text"></div>
+		<div>name: <input type="text" v-model="query.name"></div>
+		<div>type: <input type="text" v-model="query.type"></div>
+		<div>type: <input type="date" v-model="query.time"></div>
 		<button type="button" @click="search">查询</button>
 	</div>
 	<div class="list">
@@ -15,12 +19,14 @@
 			<tr>
 				<th>name</th>
 				<th>ll</th>
-				<th>45</th>
+				<th>date</th>
+				<th>status</th>
 			</tr>
 			<tr v-for="i in list">
-				<td>{{i.name}}-4555</td>
-				<td>{{i.name}}-4555</td>
-				<td>{{i.name}}-4555</td>
+				<td>{{i.name}}</td>
+				<td>{{i.type}}</td>
+				<td>{{$api.getTime(i.time)}}</td>
+				<td>{{i.status}}</td>
 			</tr>
 		</table>
 	</div>
@@ -35,34 +41,64 @@ export default{
 	},
 	data () {
 		return {
-			d: {
+			searchText: '',
+			query: {
 				name: '',
-				type: ''
+				type: '',
+				msg: '',
+				img: '',
+				time: ''
 			},
 			list: [],
-			readList: []
+			readList: [],
+			searchList: []
 		}
 	},
 	created () {
-		this.$fs.readFile(this.$path + 'list/list.json', (e, d) => {
-			if (!e) {
-				if (d) {
-					this.readList = JSON.parse(d)
-				}
+		this.$fs.readdir(this.$path + 'list', (e, d) => {
+			if (d) {
+				let list = []
+				d.forEach(s => {
+					console.log(s)
+					this.$fs.readFile(this.$path + 'list/' + s, 'utf-8', (e, d) => {
+						list.push(JSON.parse(d))
+					})
+				})
+				this.readList = list
 			}
 		})
 	},
 	methods: {
 		search () {
-			this.readList.forEach(d => {
-				console.log(d)
-			})
-			this.list = this.readList
+			let arr = []
+			if (this.query.name) {
+				this.readList.forEach(d => {
+					if (d.name.indexOf(this.query.name) !== -1) {
+						arr.push(d)
+					}
+				})
+			} else {
+				arr = this.readList
+			}
+			if (this.query.time) {
+				arr = arr.filter((d) => {
+					return this.$api.getTime(d.time) === this.query.time
+				})
+			}
+			this.list = arr
 		},
 		guess () {
 			this.$axios.post('')
 			.then(d => {
 				console.log(d.data)
+			})
+		},
+		searchChange () {
+			this.$axios.get('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?cb=show&wd=' + this.searchText)
+			.then(d => {
+				this.searchList = d.data.split('s:[')[1].replace(']});', '').split(',').map(a => {
+					return a.replace(/"/g, '')
+				})
 			})
 		}
 	},

@@ -35,7 +35,7 @@ const msg = (text, time = 2000, fn) => {
 }
 
 const log = (type = 'login') => {
-	fs.writeFile(path + 'logs/' + Date.now() + '-' + type + '.txt', getTime(), e => {})
+	fs.writeFile(path + 'logs/' + getTime(Date.now(), 1) + '-' + type + '.txt', getTime(), e => {})
 }
 
 let api = {

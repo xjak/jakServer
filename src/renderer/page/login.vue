@@ -1,5 +1,6 @@
 <template>
 	<div class="login" @keydown="enter($event)">
+		<p>{{phrase}}</p>
 		<div v-if="!json.password">
 			<label>初始化密码：</label>
 			<input type="password" v-model="password">
@@ -17,6 +18,7 @@ export default {
 	// 动态背景
 	data () {
 		return {
+			phrase: '',
 			json: {},
 			password: ''
 		}
@@ -71,6 +73,9 @@ export default {
 			} else {
 				this.json = JSON.parse(d)
 			}
+		})
+		this.$api.getPhrase().then(d => {
+			this.phrase = d.data.hitokoto + ' - ' + d.data.author
 		})
 	},
 	methods: {

@@ -2,7 +2,7 @@
 	<div class="add">
 		<div class="add-query">
 			<input type="text" v-model="searchText">
-			<button>Query</button>
+			<button @click="doubanQuery">豆瓣</button>
 			<guess :text="searchText" @select="callback"></guess>
 		</div>
 		<ul>
@@ -77,14 +77,19 @@ export default {
 				img: '', // logo
 				status: '0', // 观看状态
 				time: '', // 入库时间
-				type: '1', // 类型
+				type: '', // 类型
 				details: '', // 详情
 				region: '', // 产地
 				author: '', // 作者
 				score: '', // 评分
 				update: '', // 更新状态
 				dateRrelease: '', // 发行日期
-				press: '' // 出版社
+				press: '', // 出版社
+				size: '', // 集数
+				toStar: '', // 主演
+				language: '', // 语言
+				season: '', // 季数
+				birthday: '' // 发行日期
 			},
 			list: []
 		}
@@ -95,6 +100,51 @@ export default {
 		callback (v) {
 			console.log(v)
 			this.searchText = v
+			this.d.name = v
+		},
+		doubanQuery () {
+			this.$axios.get('https://movie.douban.com/subject_search?cat=1002&search_text=' + this.searchText)
+			.then(d => {
+				let x = document.createElement('iframe')
+				x.src = 'https://movie.douban.com/subject_search?cat=1002&search_text=' + this.searchText
+				// let x = document.createElement('div')
+				// x.innerHTML = d.data
+				console.log(x)
+			})
+		},
+		douban () {
+			this.$axios.get('https://movie.douban.com/subject/26936271/')
+			.then(d => {
+				let x = document.createElement('div')
+				x.innerHTML = d.data.replace(/(src=|href=)/g, 'data-src=').replace(/<script("[^"]*"|'[^']*'|[^'">])*>/g, '')
+				this.d.number = x.querySelector('.rating_num').innerText
+				this.d.img = x.querySelector('img[rel="v:image"]').getAttribute('data-src')
+				x = x.querySelector('#info').innerHTML.split(/\n/)
+				x = x.map(v => {
+					return v.replace(/([^\u4e00-\u9fa50-9:])/g, '').replace(/:+/g, ':').replace(/:/, '=')
+				})
+				x.forEach(v => {
+					if (v.indexOf('编剧') !== -1) {
+						this.d.author = v.replace(/[0-9:]+/g, '-').replace('-', '').split('=')[1]
+					} else if (v.indexOf('主演') !== -1) {
+						this.d.toStar = v.replace(/[0-9:]+/g, '-').replace('-', '').split('=')[1]
+					} else if (v.indexOf('类型') !== -1) {
+						this.d.type = v.replace(/:/g, '-').split('=')[1]
+					} else if (v.indexOf('地区') !== -1) {
+						this.d.region = v.split('=')[1]
+					} else if (v.indexOf('语言') !== -1) {
+						this.d.language = v.split('=')[1]
+					} else if (v.indexOf('首播') !== -1) {
+						this.d.dateRrelease = v.split('=')[1]
+					} else if (v.indexOf('季数') !== -1) {
+						this.d.season = v.split('=')[1]
+					} else if (v.indexOf('集数') !== -1) {
+						this.d.size = v.split('=')[1]
+					} else if (v.indexOf('又名') !== -1) {
+						this.d.msg = v.split('=')[1]
+					}
+				})
+			})
 		},
 		add () {
 			if (this.d.name) {

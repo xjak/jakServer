@@ -1,6 +1,6 @@
 // api
 const fs = require('fs')
-
+const axios = require('axios')
 const path = 'D:/A/data/'
 
 const getTime = (t = Date.now(), f) => {
@@ -38,11 +38,27 @@ const log = (type = 'login') => {
 	fs.writeFile(path + 'logs/' + getTime(Date.now(), 1) + '-' + type + '.txt', getTime(), e => {})
 }
 
+/*
+* 一言
+* @cat
+* a - 动画
+* b - 漫画
+* c - 游戏
+* d - 小说
+* e - 原创
+* f - 网络
+* g - 其他
+*/
+const getPhrase = (t = '') => {
+	return axios.get('https://api.imjad.cn/hitokoto/?encode=json&charset=utf-8&cat=' + t)
+}
+
 let api = {
 	path,
 	msg,
 	getTime,
-	log
+	log,
+	getPhrase
 }
 
 export {

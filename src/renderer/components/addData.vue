@@ -5,6 +5,11 @@
 			<button @click="doubanQuery">豆瓣</button>
 			<guess :text="searchText" @select="callback"></guess>
 		</div>
+		<div class="searchShowList" v-show="idList[0]">
+			<ul>
+				<li v-for="x in idList" @click="doubanDetails(x.id)">{{x.title}}-{{x.year}}</li>
+			</ul>
+		</div>
 		<ul>
 			<li>
 				<label>name：</label>
@@ -27,7 +32,12 @@
 			</li>
 			<li>
 				<label>type：</label>
-				<input type="text" v-model="d.type">
+				<select v-model="d.type">
+					<option value="0" selected>动画</option>
+					<option value="1">电影</option>
+					<option value="2">电视剧</option>
+					<option value="3">--</option>
+				</select>
 			</li>
 			<li>
 				<label>details：</label>
@@ -70,6 +80,7 @@ export default {
 	},
 	data () {
 		return {
+			idList: [],
 			searchText: '',
 			d: {
 				name: '', // 名字
@@ -77,7 +88,7 @@ export default {
 				img: '', // logo
 				status: '0', // 观看状态
 				time: '', // 入库时间
-				type: '', // 类型
+				type: '0', // 类型 0 动 1 电 2 剧
 				details: '', // 详情
 				region: '', // 产地
 				author: '', // 作者
@@ -103,17 +114,18 @@ export default {
 			this.d.name = v
 		},
 		doubanQuery () {
-			this.$axios.get('https://movie.douban.com/subject_search?cat=1002&search_text=' + this.searchText)
+			this.$api.loading(1)
+			this.$axios.get('https://movie.douban.com/j/subject_suggest?q=' + this.searchText)
 			.then(d => {
-				let x = document.createElement('iframe')
-				x.src = 'https://movie.douban.com/subject_search?cat=1002&search_text=' + this.searchText
-				// let x = document.createElement('div')
-				// x.innerHTML = d.data
-				console.log(x)
+				this.$api.loading(0)
+				this.idList = d.data
+				console.log(d.data)
 			})
 		},
-		douban () {
-			this.$axios.get('https://movie.douban.com/subject/26936271/')
+		doubanDetails (id) {
+			this.$api.loading(1)
+			this.idList = []
+			this.$axios.get('https://movie.douban.com/subject/' + id)
 			.then(d => {
 				let x = document.createElement('div')
 				x.innerHTML = d.data.replace(/(src=|href=)/g, 'data-src=').replace(/<script("[^"]*"|'[^']*'|[^'">])*>/g, '')
@@ -144,6 +156,7 @@ export default {
 						this.d.msg = v.split('=')[1]
 					}
 				})
+				this.$api.loading(0)
 			})
 		},
 		add () {
@@ -200,6 +213,30 @@ export default {
 			background: #2ef;
 			outline: none;
 			padding: 0 5px;
+		}
+	}
+	.searchShowList{
+		position: fixed;
+		background: #fefefe;
+		width: 150px;
+		height: 200px;
+		left: 50%;
+		top: 50%;
+		margin-top: -100px;
+		margin-left: -75px;
+		box-shadow: 0 0 22px #666;
+		ul{
+			width: 100%;
+		}
+		li{
+			width: 100%;
+			text-align: center;
+			font-size: 12px;
+    		cursor: pointer;
+		}
+		li:hover{
+			background: #12c;
+			color: #fff
 		}
 	}
 	ul{

@@ -41,3 +41,67 @@ li{
 	top: 48%;
 	display: none;
 }
+
+#loading{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background: rgba(0,0,0,.55);
+}
+
+#loading div{
+	width: 250px;
+	height: 50px;
+	margin: 50% auto;
+}
+#loading div i{
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 4px;
+	border-radius: 7px;
+}
+#loading div i:nth-child(1) {
+	background: red;
+	animation: loading ease-out 2s .5s infinite;
+}
+#loading div i:nth-child(2) {
+	background: blue;
+	animation: loading ease-out 2s .4s infinite;
+}
+#loading div i:nth-child(3) {
+	background: green;
+	animation: loading ease-out 2s .3s infinite;
+}
+#loading div i:nth-child(4) {
+	background: pink;
+	animation: loading ease-out 2s .2s infinite;
+}
+#loading div i:nth-child(5) {
+	background: #fff;
+	animation: loading ease-out 2s .1s infinite;
+}
+#loading div i:nth-child(6) {
+	background: #2ef;
+	animation: loading ease-out 2s 0s infinite;
+}
+@keyframes loading{
+	0%{
+		transform: translateX(0);
+		opacity: 0;
+	}
+	20%{
+		transform: translateX(20px);
+		opacity: 1;
+	}
+	80%{
+		transform: translateX(220px);
+		opacity: 1;
+	}
+	100%{
+		opacity: 0;
+		transform: translateX(240px);
+	}
+}

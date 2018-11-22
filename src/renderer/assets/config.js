@@ -34,6 +34,22 @@ const msg = (text, time = 2000, fn) => {
 	}, time)
 }
 
+const loading = (key, fn) => {
+	let div = document.querySelector('#loading')
+	if (!div) {
+		div = document.createElement('div')
+		div.id = 'loading'
+		div.innerHTML = '<div><i></i><i></i><i></i><i></i><i></i><i></i></div>'
+		document.body.appendChild(div)
+	}
+	if (key) {
+		div.style.display = 'block'
+	} else {
+		div.style.display = 'none'
+	}
+	fn && fn()
+}
+
 const log = (type = 'login') => {
 	fs.writeFile(path + 'logs/' + getTime(Date.now(), 1) + '-' + type + '.txt', getTime(), e => {})
 }
@@ -58,7 +74,8 @@ let api = {
 	msg,
 	getTime,
 	log,
-	getPhrase
+	getPhrase,
+	loading
 }
 
 export {

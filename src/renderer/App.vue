@@ -1,10 +1,11 @@
 <template>
   	<div id="app">
+        <img id="bg" src="http://qzonestyle.gtimg.cn/qzone/qzactStatics/imgs/20171122191630_ff8fef.jpg">
   		<div v-if="$route.path!='/'" id="menu">
   			<ul class="clearfix">
   				<li class="left"><a href="/">f5</a></li>
   				<li class="left"><a href="#/music">music</a></li>
-  				<li class="left"><a href="#/animation">animation</a></li>
+  				<li class="left"><a href="#/video">video</a></li>
                 <li class="left"><a href="#/fx">fx</a></li>
   			</ul>
   		</div>
@@ -21,14 +22,21 @@
 <style lang="scss">
 	#app{
 		position: relative;
+        #bg{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            z-index: -1;
+        }
 	}
  	#menu{
-        position: fixed;
+        // position: fixed;
         left: 0;
         top: 0;
  		width: 100%;
         height: 50px;
-        background: #888;
+        background: rgba(0,0,0,.7);
         ul{
             width: 100%;
             li{
@@ -37,13 +45,20 @@
                 a{
                     width: 100%;
                     display: block;
+                    height: 30px;
+                    line-height: 30px;
                     color: #fff;
+                    margin-top: 10px;
+                    transition: all .3s;
+                }
+                a:hover{
+                    text-shadow: 0px 0 24px #2f3;
                 }
             }
         }
  	}
  	#view{
-        margin-top: 50px;
+        // margin-top: 50px;
  		/*position: absolute;
  		left: 10px;
  		right: 0;

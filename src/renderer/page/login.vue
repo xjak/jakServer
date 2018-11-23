@@ -1,23 +1,20 @@
 <template>
 	<div class="login" @keydown="enter($event)">
-		<p>{{phrase}}</p>
-		<div v-if="!json.password">
-			<label>初始化密码：</label>
-			<input type="password" v-model="password">
+		<div :style="{paddingTop: h/2 + 'px'}">
+			<p>{{phrase}}</p>
+			<div>
+				<input ref="pass" type="password" v-model="password" :placeholder="json.password?'密码':'初始化密码'">
+			</div>
 		</div>
-		<div v-else>
-			<label>密码：</label>
-			<input type="password" v-model="password">
-		</div>
-		<button @click="login">提交</button>
 	</div>
 </template>
 
 <script>
 export default {
-	// 动态背景
 	data () {
 		return {
+			h: window.innerHeight,
+			bg: '',
 			phrase: '',
 			json: {},
 			password: ''
@@ -103,7 +100,7 @@ export default {
 						this.$api.log('login')
 					}
 				})
-				this.$fs.writeFile(this.$path + 'acg配置文件勿删!.txt', 'acg配置文件勿删！', () => {})
+				this.$fs.writeFile(this.$path + '服务配置文件勿删!.txt', 'acg配置文件勿删！', () => {})
 			}
 		},
 		enter (e) {
@@ -111,12 +108,31 @@ export default {
 				this.login()
 			}
 		}
+	},
+	mounted () {
+		this.$refs.pass.focus()
 	}
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 	.login{
-		padding: 20px;
+		width: 100%;
+		text-align: center;
+		>div {
+			p{
+				color: #fff;
+				font-size: 12px;
+			}
+			>div {
+				margin-top: 30px;
+				input{
+					width: 200px;
+					padding: 5px;
+					color: #fff;
+					font-size: 12px;
+				}
+			}
+		}
 	}
 </style>

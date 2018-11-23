@@ -20,8 +20,8 @@ export default new Router({
       component: () => import('@/page/music')
     },
     {
-      path: '/animation',
-      component: () => import('@/page/animation')
+      path: '/video',
+      component: () => import('@/page/video')
     },
     {
       path: '/fx',

@@ -2,7 +2,7 @@
 	<div class="add">
 		<div class="add-query">
 			<input type="text" v-model="searchText">
-			<button @click="doubanQuery">豆瓣</button>
+			<button class="button2" @click="doubanQuery">豆瓣</button>
 			<guess :text="searchText" @select="callback"></guess>
 		</div>
 		<div class="searchShowList" v-show="idList[0]">
@@ -10,7 +10,7 @@
 				<li v-for="x in idList" @click="doubanDetails(x.id)">{{x.title}}-{{x.year}}</li>
 			</ul>
 		</div>
-		<ul>
+		<ul v-show="d.name">
 			<li>
 				<label>name：</label>
 				<input type="text" v-model="d.name">
@@ -67,7 +67,7 @@
 				<label>press：</label>
 				<input type="text" v-model="d.press">
 			</li>
-			<li><button @click="add">完成</button></li>
+			<li><button class="button" @click="add">保存</button></li>
 		</ul>
 	</div>
 </template>
@@ -109,53 +109,25 @@ export default {
 	},
 	methods: {
 		callback (v) {
-			console.log(v)
 			this.searchText = v
-			this.d.name = v
 		},
 		doubanQuery () {
+			if (!this.searchText) return
+			this.d.name = this.searchText
 			this.$api.loading(1)
-			this.$axios.get('https://movie.douban.com/j/subject_suggest?q=' + this.searchText)
-			.then(d => {
+			this.$api.doubanQuery(this.searchText, d => {
 				this.$api.loading(0)
-				this.idList = d.data
-				console.log(d.data)
+				this.idList = d
 			})
 		},
 		doubanDetails (id) {
 			this.$api.loading(1)
 			this.idList = []
-			this.$axios.get('https://movie.douban.com/subject/' + id)
-			.then(d => {
-				let x = document.createElement('div')
-				x.innerHTML = d.data.replace(/(src=|href=)/g, 'data-src=').replace(/<script("[^"]*"|'[^']*'|[^'">])*>/g, '')
-				this.d.number = x.querySelector('.rating_num').innerText
-				this.d.img = x.querySelector('img[rel="v:image"]').getAttribute('data-src')
-				x = x.querySelector('#info').innerHTML.split(/\n/)
-				x = x.map(v => {
-					return v.replace(/([^\u4e00-\u9fa50-9:])/g, '').replace(/:+/g, ':').replace(/:/, '=')
-				})
-				x.forEach(v => {
-					if (v.indexOf('编剧') !== -1) {
-						this.d.author = v.replace(/[0-9:]+/g, '-').replace('-', '').split('=')[1]
-					} else if (v.indexOf('主演') !== -1) {
-						this.d.toStar = v.replace(/[0-9:]+/g, '-').replace('-', '').split('=')[1]
-					} else if (v.indexOf('类型') !== -1) {
-						this.d.type = v.replace(/:/g, '-').split('=')[1]
-					} else if (v.indexOf('地区') !== -1) {
-						this.d.region = v.split('=')[1]
-					} else if (v.indexOf('语言') !== -1) {
-						this.d.language = v.split('=')[1]
-					} else if (v.indexOf('首播') !== -1) {
-						this.d.dateRrelease = v.split('=')[1]
-					} else if (v.indexOf('季数') !== -1) {
-						this.d.season = v.split('=')[1]
-					} else if (v.indexOf('集数') !== -1) {
-						this.d.size = v.split('=')[1]
-					} else if (v.indexOf('又名') !== -1) {
-						this.d.msg = v.split('=')[1]
-					}
-				})
+			this.$api.doubanDetails(id, data => {
+				console.log(data)
+				for (let i in data) {
+					if (data[i]) this.d[i] = data[i]
+				}
 				this.$api.loading(0)
 			})
 		},
@@ -206,13 +178,10 @@ export default {
 		position: relative;
 		input{
 			height: 30px;
+			color: #fff;
 		}
 		button{
 			height: 30px;
-			border: none;
-			background: #2ef;
-			outline: none;
-			padding: 0 5px;
 		}
 	}
 	.searchShowList{
@@ -248,11 +217,13 @@ export default {
 				display: inline-block;
 				width: 130px;
 				text-align: right;
+				color: #fff;
 			}
 			input{
 				width: 260px;
 				height: 28px;
 				padding-left: 5px;
+				color: #fff;
 			}
 			select{
 				width: 130px;

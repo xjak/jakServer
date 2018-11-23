@@ -1,10 +1,10 @@
 <template>
-<div class="animation">
-	<button @click="type=1">add</button>
-	<button @click="type=2">search</button>
-	<addData v-if="type==1"></addData>
-	<list v-if="type==2"></list>
-</div>
+	<div class="video">
+		<button class="button" @click="type=1">add</button>
+		<button class="button2" @click="type=2">search</button>
+		<addData v-if="type==1"></addData>
+		<list v-if="type==2"></list>
+	</div>
 </template>
 
 <script>
@@ -17,7 +17,7 @@ export default{
 	},
 	data () {
 		return {
-			type: 1
+			type: 0
 		}
 	},
 	methods: {
@@ -26,7 +26,7 @@ export default{
 </script>
 
 <style lang="scss">
-.animation{
-	background: #eee;
+.video{
+	padding-top: 60px;
 }	
 </style>

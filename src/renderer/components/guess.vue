@@ -21,6 +21,11 @@ export default {
 		let inp = this.$refs.www.parentElement.querySelector('input')
 		this.y = inp.offsetHeight + inp.offsetTop + 3 + 'px'
 		this.x = inp.offsetLeft + 2 + 'px'
+		document.body.onclick = () => {
+			setTimeout(() => {
+				this.list = []
+			}, 50)
+		}
 	},
 	watch: {
 		text () {

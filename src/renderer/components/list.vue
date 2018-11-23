@@ -1,27 +1,49 @@
 <template>
 	<div class="list">
-		<div>
-			<div>
-			<div>name: <input type="text" v-model="query.name"></div>
-			<div>type: <input type="text" v-model="query.type"></div>
-			<div>type: <input type="date" v-model="query.time"></div>
-			<button type="button" @click="search">查询</button>
+		<div class="query">
+			<ul>
+				<li>
+					<label>name: </label>
+					<input type="text" v-model="query.name">
+				</li>
+				<li>
+					<label>type: </label>
+					<select v-model="query.type">
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					</select>
+				</li>
+				<li>
+					<label>time: </label>
+					<input type="date" v-model="query.time">
+				</li>
+				<li>
+					<label>status: </label>
+					<input type="text">
+				</li>
+			</ul>
+			<button class="button" type="button" @click="search">查询</button>
 		</div>
-		</div>
-		<table border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0" v-show="list[0]">
 			<tr>
 				<th>name</th>
 				<th>msg</th>
 				<th>date</th>
 				<th>status</th>
-				<th>operation</th>
+				<th>操作</th>
 			</tr>
 			<tr v-for="i in list">
 				<td>{{i.name}}</td>
 				<td>{{i.type}}</td>
 				<td>{{$api.getTime(i.time)}}</td>
 				<td>{{i.status}}</td>
-				<td><button>btn</button></td>
+				<td>
+					<button class="button2">编辑</button>
+					<button class="button">详情</button>
+					<button class="button2">删除</button>
+				</td>
 			</tr>
 		</table>
 	</div>
@@ -33,12 +55,13 @@ export default {
 		return {
 			query: {
 				name: '',
-				type: '',
+				type: '0',
 				msg: '',
 				img: '',
 				time: ''
 			},
-			readList: []
+			readList: [],
+			list: []
 		}
 	},
 	props: {},
@@ -81,36 +104,54 @@ export default {
 <style lang="scss">
 .list{
 	padding: 30px;
-	.search{
-		padding: 20px 30px;
-		position: relative;
-		input{
-			height: 30px;
-			padding-left: 5px;
-		}
-		button{
-			height: 30px;
-			width: 60px;
-			border: none;
-			background: #ccc;
-			color: #fff;
-			outline: none
+	.query{
+		padding: 20px 0;
+		border-top: 1px solid #fefefe;
+		ul{
+			li{
+				width: 300px;
+				margin-bottom: 6px;
+				label{
+					display: inline-block;
+					width: 30%;
+					text-align: right;
+					margin-right: 6px;
+				}
+				input{
+					height: 28px;
+					width: 60%;
+				}
+				select{
+					height: 28px;
+					width: 80px;
+				}
+			}
 		}
 	}
 	table{
-		border-collapse: collapse;
 		text-align: center;
-		// border: 1px solid #ccc;
+		width: 100%;
 		tr{
 			th{
-				width: 120px;
+				
+				font-weight: normal;
+				padding: 8px 0;
+			}
+			th:last-of-type{
+				width: 180px
 			}
 			td{
-				// border-right: none;
-				padding-left: 10px;
+				padding: 7px 5px;
+				button{
+					padding: 2px 3px;
+					margin: 0 3px;
+				}
 			}
 			&:nth-child(2n) {
-				background: #ccc;
+				background: rgba(201,241,205,.8);
+			}
+			&:nth-child(2n-1) {
+				background: rgba(233,233,233,.8);
 			}
 		}
 	}

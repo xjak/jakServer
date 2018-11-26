@@ -86,9 +86,11 @@ export default {
 				name: '', // 名字
 				msg: '', // 描述
 				img: '', // logo
-				status: '0', // 观看状态
+				like: 0,
+				label: '', // 标签
+				status: 0, // 观看状态
 				time: '', // 入库时间
-				type: '0', // 类型 0 动 1 电 2 剧
+				type: 0, // 类型 0 动 1 电 2 剧
 				details: '', // 详情
 				region: '', // 产地
 				author: '', // 作者
@@ -98,6 +100,7 @@ export default {
 				press: '', // 出版社
 				size: '', // 集数
 				toStar: '', // 主演
+				role: '', // 角色
 				language: '', // 语言
 				season: '', // 季数
 				birthday: '' // 发行日期

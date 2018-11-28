@@ -24,12 +24,12 @@ let api = {
 			fn && fn()
 		}, time)
 	},
-	getTime (t = Date.now(), f) {
+	getTime (t = Date.now(), fl) {
 		let d = new Date(t)
 		let da = d.getDate()
 		let mo = d.getMonth() + 1
 		let time = ''
-		if (f) {
+		if (fl) {
 			let h = d.getHours()
 			let f = d.getMinutes()
 			let s = d.getSeconds()
@@ -37,7 +37,7 @@ let api = {
 		}
 		da = da < 10 ? '0' + da : da
 		mo = mo < 10 ? '0' + mo : mo
-		return d.getFullYear() + '-' + mo + '-' + da + (f ? time : '')
+		return d.getFullYear() + '-' + mo + '-' + da + (fl ? time : '')
 	},
 	log (type = 'other') {
 		fs.writeFile(path + 'logs/' + this.getTime(Date.now(), 1) + '-' + type + '.txt', this.getTime(), e => {})
@@ -93,7 +93,7 @@ let api = {
 			data.img = x.querySelector('img[rel="v:image"]').getAttribute('data-src')
 			x = x.querySelector('#info').innerHTML.split(/\n/)
 			x = x.map(v => {
-				return v.replace(/([^\u4e00-\u9fa50-9:])/g, '').replace(/:+/g, ':').replace(/:/, '=')
+				return v.replace(/([^\u4e00-\u9fa50-9:()])/g, '').replace(/:+/g, ':').replace(/:/, '=')
 			})
 			x.forEach(v => {
 				if (v.indexOf('编剧') !== -1) {
@@ -101,13 +101,13 @@ let api = {
 				} else if (v.indexOf('主演') !== -1) {
 					data.toStar = v.replace(/[0-9:]+/g, '-').replace('-', '').split('=')[1]
 				} else if (v.indexOf('类型') !== -1) {
-					data.type = v.replace(/:/g, '-').split('=')[1]
+					data.label = v.replace(/:/g, '-').split('=')[1]
 				} else if (v.indexOf('地区') !== -1) {
 					data.region = v.split('=')[1]
 				} else if (v.indexOf('语言') !== -1) {
 					data.language = v.split('=')[1]
 				} else if (v.indexOf('首播') !== -1) {
-					data.dateRrelease = v.split('=')[1]
+					data.birthday = v.split('=')[1].split(')')[0] + ')'
 				} else if (v.indexOf('季数') !== -1) {
 					data.season = v.split('=')[1]
 				} else if (v.indexOf('集数') !== -1) {

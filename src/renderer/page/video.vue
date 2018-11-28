@@ -27,6 +27,6 @@ export default{
 
 <style lang="scss">
 .video{
-	padding-top: 60px;
+	padding-top: 10px;
 }	
 </style>

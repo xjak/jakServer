@@ -122,7 +122,9 @@ export default {
 		>div {
 			p{
 				color: #fff;
-				font-size: 12px;
+				font-size: 13px;
+				letter-spacing: 1.5px;
+				font-family: STKaiti, NSimSun;
 			}
 			>div {
 				margin-top: 30px;

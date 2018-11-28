@@ -12,59 +12,75 @@
 		</div>
 		<ul v-show="d.name">
 			<li>
-				<label>name：</label>
+				<label>名称：</label>
 				<input type="text" v-model="d.name">
 			</li>
 			<li>
-				<label>msg：</label>
+				<label>描述：</label>
 				<input type="text" v-model="d.msg">
 			</li>
 			<li>
-				<label>img：</label>
+				<label>主演：</label>
+				<input type="text" v-model="d.toStar">
+			</li>
+			<li>
+				<label>LOGO：</label>
 				<input type="text" v-model="d.img">
 			</li>
 			<li>
-				<label>status：</label>
+				<label>观状态：</label>
 				<select v-model="d.status">
-					<option value="0" selected>未</option>
-					<option value="1">已</option>
+					<option value="0" selected>未看</option>
+					<option value="1">已看</option>
 				</select>
 			</li>
 			<li>
-				<label>type：</label>
+				<label>类型：</label>
 				<select v-model="d.type">
 					<option value="0" selected>动画</option>
 					<option value="1">电影</option>
 					<option value="2">电视剧</option>
-					<option value="3">--</option>
+					<option value="3">other</option>
 				</select>
 			</li>
 			<li>
-				<label>details：</label>
+				<label>详情：</label>
 				<input type="text" v-model="d.details">
 			</li>
 			<li>
-				<label>region：</label>
+				<label>集数：</label>
+				<input type="text" v-model="d.size">
+			</li>
+			<li>
+				<label>季数：</label>
+				<input type="text" v-model="d.season">
+			</li>
+			<li>
+				<label>语言：</label>
+				<input type="text" v-model="d.language">
+			</li>
+			<li>
+				<label>地区：</label>
 				<input type="text" v-model="d.region">
 			</li>
 			<li>
-				<label>author：</label>
+				<label>作者：</label>
 				<input type="text" v-model="d.author">
 			</li>
 			<li>
-				<label>score：</label>
+				<label>评分：</label>
 				<input type="text" v-model="d.score">
 			</li>
 			<li>
-				<label>update：</label>
+				<label>更新时间：</label>
 				<input type="text" v-model="d.update">
 			</li>
 			<li>
-				<label>dateRrelease：</label>
-				<input type="text" v-model="d.dateRrelease">
+				<label>发布日期：</label>
+				<input type="text" v-model="d.birthday">
 			</li>
 			<li>
-				<label>press：</label>
+				<label>出版社：</label>
 				<input type="text" v-model="d.press">
 			</li>
 			<li><button class="button" @click="add">保存</button></li>
@@ -96,7 +112,6 @@ export default {
 				author: '', // 作者
 				score: '', // 评分
 				update: '', // 更新状态
-				dateRrelease: '', // 发行日期
 				press: '', // 出版社
 				size: '', // 集数
 				toStar: '', // 主演
@@ -129,7 +144,7 @@ export default {
 			this.$api.doubanDetails(id, data => {
 				console.log(data)
 				for (let i in data) {
-					if (data[i]) this.d[i] = data[i]
+					this.d[i] = data[i]
 				}
 				this.$api.loading(0)
 			})
@@ -137,8 +152,7 @@ export default {
 		add () {
 			if (this.d.name) {
 				let time = Date.now()
-				this.d.time = this.$api.getTime(time)
-				this.id = time
+				this.d.time = this.$api.getTime(time, 1)
 				this.$fs.writeFile(this.$path + 'list/' + time + '.json', JSON.stringify(this.d), e => {
 					if (e) {
 						this.$api.msg('添加失败！')
@@ -174,12 +188,14 @@ export default {
 
 <style lang="scss">
 .add{
+	margin-top: 20px;
 	.add-query{
 		width: 400px;
 		margin: 0 auto;
 		padding-left: 70px;
 		position: relative;
 		input{
+			width: 262px;
 			height: 30px;
 			color: #fff;
 		}
@@ -189,33 +205,36 @@ export default {
 	}
 	.searchShowList{
 		position: fixed;
-		background: #fefefe;
-		width: 150px;
-		height: 200px;
-		left: 50%;
-		top: 50%;
-		margin-top: -100px;
-		margin-left: -75px;
-		box-shadow: 0 0 22px #666;
+    	background: #fefefe;
+    	width: 160px;
+    	height: 200px;
+    	left: 50%;
+    	top: 50%;
+    	margin-top: -100px;
+    	margin-left: -80px;
+    	box-shadow: 0 0 50px #000;
+    	font-size: 14px;
 		ul{
 			width: 100%;
 		}
 		li{
 			width: 100%;
 			text-align: center;
+			padding: 5px 0;
 			font-size: 12px;
     		cursor: pointer;
 		}
 		li:hover{
-			background: #12c;
+			background: #afc0ff;
 			color: #fff
 		}
 	}
-	ul{
+	>ul{
 		width: 400px;
 		margin: 0 auto;
 		li{
 			margin-top: 8px;
+			font-size: 16px;
 			label{
 				display: inline-block;
 				width: 130px;
@@ -227,10 +246,16 @@ export default {
 				height: 28px;
 				padding-left: 5px;
 				color: #fff;
+				font-size: 15px;
 			}
 			select{
 				width: 130px;
 				height: 28px;
+				color: #fff;
+				font-size: 15px;
+				option{
+					background: #ccc;
+				}
 			}
 		}
 	}

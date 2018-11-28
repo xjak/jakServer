@@ -21,6 +21,9 @@ li{
 	float: right;
 }
 .clearfix{
+	clear: both;
+}
+.clearfix:after{
 	content: "";
 	display: block;
 	width: 0;
@@ -66,6 +69,8 @@ input::-webkit-input-placeholder{
 }
 .button:active{
 	opacity: 1;
+	background-color: #fff;
+	color: #409eff;
 }
 .button2:hover{
 	opacity: .8;

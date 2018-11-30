@@ -7,8 +7,28 @@
 					<input type="text" v-model="query.name">
 				</li>
 				<li>
-					<label>时间: </label>
+					<label>描述: </label>
+					<input type="text" v-model="query.msg">
+				</li>
+				<li>
+					<label>入库日期: </label>
 					<input type="date" v-model="query.time">
+				</li>
+				<li>
+					<label>发布日期: </label>
+					<input type="date" v-model="query.time">
+				</li>
+				<li>
+					<label>Like: </label>
+					<input type="checkbox">
+				</li>
+				<li>
+					<label>Like: </label>
+					<input type="checkbox">
+				</li>
+				<li>
+					<label>产地: </label>
+					<input type="text" v-model="query.name">
 				</li>
 				<li>
 					<label>类型: </label>
@@ -31,7 +51,7 @@
 			</ul>
 			<button class="button" type="button" @click="search">查询</button>
 		</div>
-		<table border="0" cellspacing="0" cellpadding="0" v-show="list[0]">
+		<table border="0" cellspacing="0" cellpadding="0" v-show="!list[0]">
 			<tr>
 				<th>img</th>
 				<th>name</th>
@@ -64,7 +84,8 @@
 				<div class="left">描述</div>
 				<div class="left">类型</div>
 				<div class="left">标签</div>
-				<div class="left">日期</div>
+				<div class="left sort" @click="scoreSort" :class="{'sort-top':sort.score,'sort-bottom':!sort.score}" title="排序">评分</div>
+				<div class="left sort" @click="timeSort" :class="{'sort-top':sort.birthday,'sort-bottom':!sort.birthday}" title="排序">日期</div>
 				<div class="left">状态</div>
 				<div class="left">操作</div>
 			</li>
@@ -74,7 +95,8 @@
 				<div class="left" :title="i.msg">{{i.msg}}</div>
 				<div class="left">{{toType(i.type)}}</div>
 				<div class="left" :title="i.label">{{i.label}}</div>
-				<div class="left">{{i.time}}</div>
+				<div class="left">{{i.score}}</div>
+				<div class="left">{{i.birthday}}</div>
 				<div class="left">{{i.status?'未':'已'}}</div>
 				<div class="left">
 					<button class="button2">编辑</button>
@@ -109,6 +131,10 @@ export default {
 				img: '',
 				time: ''
 			},
+			sort: {
+				birthday: '',
+				score: ''
+			},
 			readList: [],
 			list: [],
 			details: {}
@@ -133,7 +159,7 @@ export default {
 			let arr = []
 			if (this.query.name) {
 				this.readList.forEach(d => {
-					if (d.name.indexOf(this.query.name) !== -1) {
+					if (d.name.toLowerCase().indexOf(this.query.name.toLowerCase()) !== -1) {
 						arr.push(d)
 					}
 				})
@@ -146,6 +172,26 @@ export default {
 				})
 			}
 			this.list = arr
+		},
+		timeSort () {
+			this.list.sort((a, b) => {
+				if (this.sort.birthday) {
+					return a.birthday.replace(/[^0-9]/g, '') - b.birthday.replace(/[^0-9]/g, '')
+				} else {
+					return b.birthday.replace(/[^0-9]/g, '') - a.birthday.replace(/[^0-9]/g, '')
+				}
+			})
+			this.sort.birthday = !this.sort.birthday
+		},
+		scoreSort () {
+			this.list.sort((a, b) => {
+				if (this.sort.score) {
+					return a.score - b.score
+				} else {
+					return b.score - a.score
+				}
+			})
+			this.sort.score = !this.sort.score
 		},
 		showDetails (i) {
 			this.details = this.list[i]
@@ -234,6 +280,32 @@ export default {
 			display: flex;
 			margin-bottom: 5px;
 			text-align: center;
+			.sort{
+				color: red;
+				position: relative;
+			}
+			.sort:after,.sort:before{
+				content: "";
+				width: 0;
+				height: 0;
+				position: absolute;
+				right: 0px;
+				top: 35px;
+				display: block;
+				border: 5px solid transparent;
+				border-top-color: #bbb;
+			}
+			.sort:before{
+				top: 23px;
+				border-top-color: transparent;
+				border-bottom-color: #bbb;
+			}
+			.sort-top:before{
+				border-bottom-color: #888;
+			}
+			.sort-bottom:after{
+				border-top-color: #888;
+			}
 			p{
 				flex: 1;
 			}

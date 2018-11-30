@@ -24,7 +24,6 @@
     },
     mounted () {
       window.addEventListener('scroll', e => {
-        console.log(document.documentElement.scrollTop)
         if (document.documentElement.scrollTop > 100) {
           this.s = 'fixed'
         } else {

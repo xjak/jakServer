@@ -120,12 +120,17 @@ export default {
 				season: '', // 季数
 				birthday: '' // 发行日期
 			},
+			cloneD: {},
 			list: []
 		}
 	},
 	created () {
+		this.cloneD = Object.assign({}, this.d) // 浅拷贝
 	},
 	methods: {
+		initData () {
+			Object.assign(this.d, this.cloneD)
+		},
 		callback (v) {
 			this.searchText = v
 		},
@@ -158,6 +163,7 @@ export default {
 						this.$api.msg('添加失败！')
 					} else {
 						this.$api.msg('添加成功！')
+						this.initData()
 						this.copy()
 					}
 				})

@@ -20,29 +20,30 @@
 				</li>
 				<li>
 					<label>Like: </label>
-					<input type="checkbox">
-				</li>
-				<li>
-					<label>Like: </label>
-					<input type="checkbox">
+					<input type="checkbox" v-model="query.like">
 				</li>
 				<li>
 					<label>产地: </label>
-					<input type="text" v-model="query.name">
+					<select v-model="query.region">
+						<option value="">全部</option>
+						<option value="国产">国产</option>
+						<option value="日本">日本</option>
+						<option value="美国">美国</option>
+						<option value="韩国">韩国</option>
+					</select>
 				</li>
 				<li>
 					<label>类型: </label>
 					<select v-model="query.type">
 						<option value="">全部</option>
-						<option value="0">动</option>
-						<option value="1">电</option>
-						<option value="2">剧</option>
-						<option value="3">other</option>
+						<option value="0">动画</option>
+						<option value="1">电影</option>
+						<option value="2">电视剧</option>
 					</select>
 				</li>
 				<li>
 					<label>观状态: </label>
-					<select v-model="query.type">
+					<select v-model="query.status">
 						<option value="">全部</option>
 						<option value="0">未看</option>
 						<option value="1">已看</option>
@@ -77,9 +78,10 @@
 				</td>
 			</tr>
 		</table>
-		<ul class="lists">
+		<ul class="lists" v-show="list.length">
 			<li class="clearfix">
 				<div class="left">IMG</div>
+				<div class="left">Like</div>
 				<div class="left">名称</div>
 				<div class="left">描述</div>
 				<div class="left">类型</div>
@@ -91,20 +93,23 @@
 			</li>
 			<li class="clearfix" v-for="(i,index) in list">
 				<div class="left" @click="showDetails(index)"><img :src="i.img"></div>
+				<div class="left">{{i.like}}</div>
 				<div class="left" :title="i.name">{{i.name}}</div>
 				<div class="left" :title="i.msg">{{i.msg}}</div>
 				<div class="left">{{toType(i.type)}}</div>
 				<div class="left" :title="i.label">{{i.label}}</div>
-				<div class="left">{{i.score}}</div>
-				<div class="left">{{i.birthday}}</div>
-				<div class="left">{{i.status?'未':'已'}}</div>
+				<div class="left" :title="i.score">{{i.score}}</div>
+				<div class="left" :title="i.birthday">{{i.birthday}}</div>
+				<div class="left">{{i.status?'已':'未'}}</div>
 				<div class="left">
 					<button class="button2">编辑</button>
 					<button class="button" @click="showDetails(index)">详情</button>
 					<button class="button2">删除</button>
 				</div>
 			</li>
+			
 		</ul>
+		<p v-show="!list.length" class="list-error">暂无信息！</p>
 		<div class="details" v-if="details.img">
 			<div class="clearfix">
 				<span @click="details={}">X</span>
@@ -126,10 +131,13 @@ export default {
 		return {
 			query: {
 				name: '',
-				type: '0',
+				type: '',
+				like: '',
 				msg: '',
 				img: '',
-				time: ''
+				time: '',
+				status: '',
+				region: ''
 			},
 			sort: {
 				birthday: '',
@@ -156,29 +164,53 @@ export default {
 	},
 	methods: {
 		search () {
-			let arr = []
+			let arr = this.readList
 			if (this.query.name) {
-				this.readList.forEach(d => {
-					if (d.name.toLowerCase().indexOf(this.query.name.toLowerCase()) !== -1) {
-						arr.push(d)
-					}
+				arr = arr.filter((d) => {
+					return d.name.toLowerCase().indexOf(this.query.name.toLowerCase()) !== -1
 				})
-			} else {
-				arr = this.readList
+			}
+			if (this.query.msg) {
+				arr = arr.filter((d) => {
+					return d.msg.toLowerCase().indexOf(this.query.msg.toLowerCase()) !== -1
+				})
 			}
 			if (this.query.time) {
 				arr = arr.filter((d) => {
 					return this.$api.getTime(d.time) === this.query.time
 				})
 			}
+			if (this.query.region !== '') {
+				arr = arr.filter((d) => {
+					return this.query.region === d.region
+				})
+			}
+			if (this.query.type !== '') {
+				arr = arr.filter((d) => {
+					return this.query.type === d.type + ''
+				})
+			}
+			if (this.query.status !== '') {
+				arr = arr.filter((d) => {
+					return this.query.status === d.status + ''
+				})
+			}
+			if (this.query.like) {
+				arr = arr.filter((d) => {
+					return d.like === 1
+				})
+			}
+			console.log(this.query.like)
 			this.list = arr
 		},
 		timeSort () {
 			this.list.sort((a, b) => {
+				a = a.birthday.replace(/[^0-9]/g, '')
+				b = b.birthday.replace(/[^0-9]/g, '')
 				if (this.sort.birthday) {
-					return a.birthday.replace(/[^0-9]/g, '') - b.birthday.replace(/[^0-9]/g, '')
+					return a - b
 				} else {
-					return b.birthday.replace(/[^0-9]/g, '') - a.birthday.replace(/[^0-9]/g, '')
+					return b - a
 				}
 			})
 			this.sort.birthday = !this.sort.birthday
@@ -229,6 +261,13 @@ export default {
 					height: 28px;
 					width: 60%;
 					color: #fff;
+				}
+				input[type="checkbox"]{
+					height: 19px;
+    				width: 19px;
+    				position: relative;
+    				top: 3px;
+    				left: 5px;
 				}
 				select{
 					height: 28px;
@@ -283,6 +322,7 @@ export default {
 			.sort{
 				color: red;
 				position: relative;
+				cursor: pointer;
 			}
 			.sort:after,.sort:before{
 				content: "";
@@ -327,7 +367,7 @@ export default {
 			}
 			div:nth-child(3){
 			}
-			div:nth-child(3),div:nth-child(2),div:nth-child(5),div:nth-child(6) {
+			div:nth-child(3),div:nth-child(4),div:nth-child(5),div:nth-child(6) {
 				flex: 2;
 			}
 			div:last-of-type{
@@ -340,6 +380,13 @@ export default {
 		li:nth-child(2n-1) {
 			background: rgba(233,233,233,.5);
 		}
+	}
+	.list-error{
+		width: 100%;
+		color: #fff;
+		font-size: 16px;
+		text-align: center;
+		line-height: 35px;
 	}
 	.details{
 		position: fixed;
